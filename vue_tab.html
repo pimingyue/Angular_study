@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="http://import.highso.org.cn/vue/vue.js"></script>
+    <style>
+        ul {
+            list-style: none;
+        }
+        
+        .title {
+            display: flex;
+        }
+        
+        .title li {
+            width: 100px;
+            height: 60px;
+            border: 1px solid #ddd;
+            line-height: 60px;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        .img li {
+            display: none;
+        }
+        
+        .title li.grey {
+            background: #999;
+        }
+        
+        .img li.current {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div>
+            <ul class="title">
+                <li :class='currentIndex==index?"grey":""' :key="item.id" v-for="(item,index) in list" @click='currentIndex = index'> {{item.title}} </li>
+            </ul>
+            <ul class="img">
+                <li :class='currentIndex==index?"current":""' :key="item.id" v-for="(item,index) in list">
+                    <img :src="item.path" alt="">
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    currentIndex: 0,
+                    list: [{
+                        id: 1,
+                        title: 'apple',
+                        path: 'http://import.highso.org.cn/images/web/public/jz2/ej-20200529-img3.jpg'
+                    }, {
+                        id: 2,
+                        title: 'orange',
+                        path: 'http://import.highso.org.cn/images/web/public/jz2/ej-20200529-img2.jpg'
+                    }, {
+                        id: 1,
+                        title: 'lenmo',
+                        path: 'http://import.highso.org.cn/images/web/public/jz2/ej-20200529-img1.jpg'
+                    }]
+                }
+            },
+        })
+    </script>
+
+</body>
+
+</html>
