@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图书管理系统</title>
+    <script src="http://import.highso.org.cn/vue/vue.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        th,
+        td {
+            min-width: 100px;
+            height: 40px;
+            text-align: center;
+        }
+        
+        th {
+            background: chocolate;
+        }
+        
+        input {
+            height: 25px;
+        }
+        
+        button {
+            height: 35px;
+            width: 80px;
+        }
+        
+        .box {
+            margin: 30px auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app">
+
+        <div class="box">
+            <div>
+                <label>编号：<input type="text" id="id" v-model="id" :disabled="flag" ></label>
+                <label>名称：<input type="text" id="name" v-model="name"></label>
+                <button @click="addList">提交</button>
+            </div>
+            <table border="1" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th>编号</th>
+                    <th>名称</th>
+                    <th>时间</th>
+                    <th>操作</th>
+                </tr>
+
+                <tr v-for="(item,index) in books" :key="item.id">
+                    <td> {{item.id}} </td>
+                    <td> {{item.name}} </td>
+                    <td> {{item.date }} </td>
+                    <td>
+                        <span @click="modify(item.id)">修改</span> |
+                        <span @click="delect(item.id)">删除</span>
+                    </td>
+                </tr>
+            </table>
+            图书总数：{{total}}
+        </div>
+    </div>
+
+    <script>
+        Vue.filter('dateFormat', function(val) {
+            var d = {
+                y: val.getFullYear(),
+                M: val.getMonth(),
+                d: val.getDate(),
+                H: val.getHours(),
+                m: val.getMinutes(),
+                s: val.getSeconds()
+            }
+            var mat = d.y + '-' + d.M + '-' + d.d + '   ' + d.H + '-' + d.m + '-' + d.s
+            return mat
+        })
+        var vm = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    flag: false,
+                    id: '',
+                    name: '',
+                    books: [{
+                        id: 1,
+                        name: '三国演义',
+                        date: new Date()
+                    }, {
+                        id: 2,
+                        name: '水浒传',
+                        date: '1603483120321'
+                    }, {
+                        id: 3,
+                        name: '红楼梦',
+                        date: '1604483100321'
+                    }, {
+                        id: 4,
+                        name: '西游记',
+                        date: '1604483120321'
+                    }],
+
+                }
+            },
+            methods: {
+                addList: function() {
+
+                    if (this.flag) {
+                        this.books.some((item) => {
+                            if (item.id == this.id) {
+                                item.name = this.name
+                                return true
+                            }
+                        })
+                        this.flag = false
+
+                    } else {
+                        this.books.push({
+                            id: this.id,
+                            name: this.name,
+                            date: new Date()
+                        })
+                    }
+
+                    this.id = "";
+                    this.name = "";
+                },
+                modify: function(id) {
+                    this.flag = true
+                    var book = this.books.filter(function(item) {
+                        return item.id == id
+                    })
+                    this.id = book[0].id
+                    this.name = book[0].name
+
+                },
+                delect: function(id) {
+                    var index = this.books.findIndex((item) => {
+                        return item.id == id
+                    })
+                    console.log(index)
+                    this.books.splice(index, 1)
+                }
+            },
+
+            computed: {
+                total: function() {
+                    return this.books.length
+                }
+            },
+
+
+        })
+    </script>
+
+</body>
+
+</html>
