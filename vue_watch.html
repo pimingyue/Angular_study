@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="http://import.highso.org.cn/vue/vue.js"></script>
+    <style>
+        ul {
+            list-style: none;
+        }
+        
+        .title {
+            display: flex;
+        }
+        
+        .title li {
+            width: 100px;
+            height: 60px;
+            border: 1px solid #ddd;
+            line-height: 60px;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        .img li {
+            display: none;
+        }
+        
+        .title li.grey {
+            background: #999;
+        }
+        
+        .img li.current {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div>
+            用户名：<input type="text" v-model.lazy="username" />
+            <span> {{tips}} </span>
+        </div>
+    </div>
+
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    username: '',
+                    tips: ''
+                }
+            },
+            methods: {
+                checkUname: function(uname) {
+                    var that = this
+                    setTimeout(function() {
+                        if (uname == 'admin') {
+                            that.tips = '用户名已存在，请换一个名称'
+                        } else {
+                            that.tips = '用户名可以使用'
+                        }
+                    }, 2000)
+
+                }
+            },
+            watch: {
+                username: function(val) {
+                    this.checkUname(val)
+                    this.tips = '正在验证...'
+                }
+            },
+        })
+    </script>
+
+</body>
+
+</html>
