@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>购物车</title>
+    <script src="../vue.js"></script>
+    <style>
+        .current {
+            color: red;
+        }
+        
+        .wrap {
+            width: 500px;
+            margin: 50px auto;
+        }
+        
+        .container li {
+            height: 50px;
+            display: flex;
+            justify-content: space-evenly;
+        }
+        
+        .header {
+            text-align: center;
+        }
+        
+        .footer {
+            text-align: right;
+            box-sizing: border-box;
+            padding-right: 50px;
+        }
+        
+        .nums {
+            width: 50px;
+            height: 30px;
+            box-sizing: border-box;
+        }
+        
+        .cubtn {
+            display: inline-block;
+            width: 50px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app">
+        <h2>我是父组件</h2>
+        <my-cart>
+            <h2>hhhhh</h2>
+
+        </my-cart>
+    </div>
+
+
+    <script>
+        // 事件中心
+
+        var CartTitle = {
+            props: ['username'],
+            template: `
+                <div class="header"> {{username}}的购物车</div>
+            `
+        }
+
+        var CartList = {
+            props: ['goodsList'],
+            template: `
+                <ul class="container">
+                    <li :key="item.id" v-for="(item,index) in goodsList">
+                        <span> {{item.name}} </span>
+                        <div>
+                            <span class="cubtn" @click="sub(item.id)">-</span>
+                            <input type="text" class="nums" :value="item.num" @blur='changnums(item.id,$event)'>
+                            <span class="cubtn" @click="add(item.id)">+</span>
+                        </div>
+                        <span @click="del(item.id)">❌</span>
+                    </li>
+                </ul>
+            `,
+            methods: {
+
+                del: function(id) {
+                    this.$emit('cart-del', id)
+                },
+                changnums: function(id, event) {
+                    // console.log(id + event.target.value)
+                    this.$emit('num-change', {
+                        id: id,
+                        num: event.target.value,
+                        type: 'change'
+                    })
+                },
+                sub: function(id) {
+                    this.$emit('num-change', {
+                        id: id,
+                        type: 'sub'
+                    })
+
+                },
+                add: function(id) {
+                    this.$emit('num-change', {
+                        id: id,
+                        type: 'add'
+                    })
+                }
+            },
+
+        }
+
+        var CartTotal = {
+            props: ['goodsList'],
+            template: `
+                <div class="footer">
+                    <span>总价： {{total}} </span>
+                    <button>结算</button>
+                </div>
+            `,
+            computed: {
+                total: function() {
+                    var t = 0;
+                    this.goodsList.forEach(item => {
+                        t += item.price * item.num
+                    });
+
+                    return t;
+                }
+            },
+        }
+
+        Vue.component('my-cart', {
+            data() {
+                return {
+                    uname: "张三",
+                    list: [{
+                        id: 1,
+                        name: 'TCL彩电',
+                        price: 1000,
+                        num: 1
+                    }, {
+                        id: 2,
+                        name: '机顶盒',
+                        price: 600,
+                        num: 2
+                    }, {
+                        id: 3,
+                        name: '小米手机',
+                        price: 1000,
+                        num: 1
+                    }, {
+                        id: 4,
+                        name: 'PPTV电视',
+                        price: 1000,
+                        num: 1
+                    }, {
+                        id: 5,
+                        name: 'PPT',
+                        price: 1000,
+                        num: 1
+                    }]
+                }
+            },
+            template: `
+                <div class="wrap">
+                    <cart-title :username="uname"></cart-title>
+                    <cart-list 
+                        :goodsList="list" 
+                        @cart-del="delCart($event)"
+                        @num-change="changeNum($event)"
+                    > </cart-list>
+                    <cart-total :goodsList="list"></cart-total>
+                </div>
+            `,
+            components: {
+                'cart-title': CartTitle,
+                'cart-list': CartList,
+                'cart-total': CartTotal
+            },
+            methods: {
+                delCart: function(id) {
+                    console.log('我的' + id)
+
+                    var newList = this.list.filter((item) => {
+                        return item.id != id
+                    })
+                    this.list = newList
+                },
+                changeNum: function(val) {
+                    if (val.type == 'change') {
+                        this.list.some((item) => {
+                            if (item.id == val.id) {
+                                item.num = val.num
+                                return true
+                            }
+                        })
+                    } else if (val.type == 'add') {
+                        this.list.some((item) => {
+                            if (item.id == val.id) {
+                                item.num++;
+                                return true
+                            }
+                        })
+                    } else if (val.type == 'sub') {
+                        this.list.some((item) => {
+                            if (item.id == val.id) {
+                                if (item.num != 1) {
+                                    item.num -= 1
+                                }
+
+                                return true
+                            }
+                        })
+                    }
+
+                }
+            },
+
+        })
+
+
+
+        var vm = new Vue({
+            el: '#app',
+            data() {
+                return {
+
+
+                }
+            },
+
+        })
+    </script>
+
+</body>
+
+</html>
