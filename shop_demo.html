@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table th {
+            min-width: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div>
+        <span>按照价格搜索</span>
+        <input type="text" id="lowerPrice" /> - <input type="text" id="highPrice" />
+        <input type="button" value="搜索" onclick="choosePrice()">
+
+    </div>
+
+    <div>
+        <span>按照名称搜索</span>
+        <input type="text" id="queryName" />
+        <input type="button" value="搜索" onclick="searchForName()">
+        <input type="button" value="重置" onclick="init()">
+    </div>
+
+    <table border="1">
+        <thead>
+            <th>id</th>
+            <th>名称</th>
+            <th>价格</th>
+        </thead>
+        <tbody>
+
+
+
+        </tbody>
+    </table>
+
+
+
+    <script>
+        var _that = this;
+        let data = [{
+            id: 1,
+            pname: 'apple',
+            price: 5999
+        }, {
+            id: 2,
+            pname: 'oppo',
+            price: 999
+        }, {
+            id: 3,
+            pname: '荣耀',
+            price: 1299
+        }, {
+            id: 4,
+            pname: '华为',
+            price: 1999
+        }]
+
+        let tbody = document.querySelector('tbody')
+        let newDate = ''
+
+        let template = '';
+
+        function renderTable(arr) {
+            tbody.innerHTML = ''
+            template = ''
+            arr.forEach((item, index) => {
+                template += `<tr>
+                <td>` + item.id + `</td>
+                <td>` + item.pname + `</td>
+                <td>` + item.price + `</td>
+            </tr>`
+
+            })
+            tbody.insertAdjacentHTML('beforeend', template);
+        }
+
+        function choosePrice() {
+            let lowerPrice = document.getElementById('lowerPrice').value;
+            let highPrice = document.getElementById('highPrice').value;
+            let price = '';
+            if (lowerPrice == null) {
+                lowerPrice = 0
+            }
+            if (highPrice != 0 && highPrice != null) {
+                newDate = data.filter((item, index) => {
+                    return item.price >= lowerPrice && item.price <= highPrice
+                })
+                console.log(newDate)
+                renderTable(newDate);
+            }
+        }
+
+        function searchForName() {
+            let queryName = document.getElementById('queryName')
+            console.log(queryName.value)
+            console.log(data)
+            let queryData = data.filter(item => {
+                return item.pname == queryName.value
+            })
+            console.log(queryData)
+            renderTable(queryData);
+
+        }
+
+        function init() {
+            renderTable(data);
+        }
+
+        init()
+    </script>
+</body>
+
+</html>
